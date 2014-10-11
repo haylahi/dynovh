@@ -1,0 +1,84 @@
+#!/usr/bin/python
+# coding=utf-8
+
+import OvhApi
+import key
+import domains
+import urllib2, time, re, sys, xmlrpclib
+
+__author__ = 'hubert'
+
+REFIP = 'http://checkip.dyndns.com'
+NBR_CONNEXION = 10
+NBR_ATTEMPT_REFIP = 10
+
+key = key.key()
+AK = key.appkey
+AS = key.appsec
+CK = key.conkey
+
+domains = domains.domains()
+dyndoms = domains.domlist
+
+api = OvhApi.Api("https://eu.api.ovh.com/1.0", AK, AS, CK)
+
+def get_zone_id(zone):
+  res = api.get('/domain/zone/' + zone[0] + '/record?fieldType=A&subDomain=' + zone[1])
+  if not isinstance(res, list):
+    raise Exception(str(res))
+  return res[0]
+
+def update_zone(zone_name, zone_id, new_ip):
+  new = {u'target': new_ip, 'fieldType': 'A', 'ttl': 300}
+  return (api.put('/domain/zone/' + zone_name + '/record/' + str(zone_id), new))
+
+def get_old_ip(zone_name, zone_id):
+  res = api.get('/domain/zone/' + zone_name + '/record/' + str(zone_id))
+  try:
+    oldip = res["target"]
+  except:
+    raise Exception(str(res))
+  return oldip
+
+def get_current_ip():
+    i = 0
+    succed = False
+    while not succed:
+        if i >= NBR_ATTEMPT_REFIP :
+            raise Exception("Impossion de trouver l'ip courante")
+        try:
+            f = urllib2.urlopen(REFIP, None, 10)
+            succed = True
+        except:
+            succed = False
+            i = i + 1
+    data = f.read()
+    f.close()
+    pattern = re.compile('\d+\.\d+\.\d+\.\d+')
+    result = pattern.search(data, 0)
+    if result == None:
+        raise Exception("Pas d'ip dans cette page")
+        sys.exit()
+    else:
+        currentip = result.group(0)
+    return currentip
+
+def process_zone(dyndoms):
+  current_ip = get_current_ip()
+  for zone in dyndoms:
+    zone_id = get_zone_id(zone)
+    zone_name = zone[0]
+    old_ip = get_old_ip(zone_name, zone_id)
+    report = 'zone ' + zone[1] + '.' + zone_name
+    report = report + "\n" + old_ip
+    report = report + "\n" + current_ip
+
+    if old_ip != current_ip:
+      ret = update_zone(zone_name, zone_id, current_ip)
+      if ret != None:
+        raise Exception(str(ret))
+      print(report)
+      print("Modification de l'enregistrement effectuée avec l'ip: %s" % current_ip)
+
+process_zone (dyndoms)
+
