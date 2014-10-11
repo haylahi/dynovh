@@ -1,3 +1,5 @@
 *.swp
 dynovh_save
 *.pyc
+domains.py
+key.py
