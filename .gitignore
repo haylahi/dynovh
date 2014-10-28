@@ -2,4 +2,9 @@
 *.pyc
 key.py
 domains.py
-
+v3/host
+v3/login
+v3/password
+v3/ipcheck.dat
+v3/ipcheck.html
+v3/webip.html

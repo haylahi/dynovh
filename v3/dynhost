@@ -1,0 +1,23 @@
+#! /bin/sh
+
+# OVH - DynHost
+#
+# Permet de mettre à jour le champ DYNHOST
+# pour votre nom de domaine.
+# Utilise l'adresse de l'interface ppp0 de 
+# votre système Linux.
+
+# La mise à jour ne se fait que si l'adresse IP
+# a effectivement changé.
+# Fichier de log: dynhost.log
+
+HOST=$(cat host)
+LOGIN=$(cat login)
+PASSWORD=$(cat password)
+OPTIONS="-r checkip.dyndns.org -v"
+
+#echo ---------------------------------- >> ./dynhost.log
+#echo `date` >> ./dynhost.log 
+#echo Démarrage de DynHost >> ./dynhost.log
+
+python ipcheck.py $OPTIONS $LOGIN $PASSWORD $HOST
