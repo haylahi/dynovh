@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 # OVH - DynHost
 #
@@ -11,10 +11,17 @@
 # a effectivement changé.
 # Fichier de log: dynhost.log
 
+p1=$(pwd)
+cmd=$0
+p2=${cmd/dynhost/}
+cd $p1
+cd $p2
+
 HOST=$(cat host)
 LOGIN=$(cat login)
 PASSWORD=$(cat password)
-OPTIONS="-r checkip.dyndns.org -v"
+#OPTIONS="-r checkip.dyndns.org -v" # add verbosity
+OPTIONS="-r checkip.dyndns.org"
 
 #echo ---------------------------------- >> ./dynhost.log
 #echo `date` >> ./dynhost.log 
