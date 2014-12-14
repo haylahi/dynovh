@@ -26,6 +26,8 @@ def get_zone_id(zone):
   res = api.get('/domain/zone/' + zone[0] + '/record?fieldType=A&subDomain=' + zone[1])
   if not isinstance(res, list):
     raise Exception(str(res))
+  if len(res) == 0:
+    raise Exception("Le nom de domaine " + zone[0] + " ne contient pas de sous-domaine " + zone[1])
   return res[0]
 
 def update_zone(zone_name, zone_id, new_ip):
