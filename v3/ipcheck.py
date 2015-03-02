@@ -1073,6 +1073,7 @@ if __name__=="__main__":
     if ipmatch != None:
       localip = ipmatch.group()
       logger.logit("webip detected = " + localip)
+      #print("webip detected = " + localip)
 
     if localip == "":
       logline = "No address found at " + opt_router

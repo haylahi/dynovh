@@ -21,7 +21,8 @@ HOST=$(cat host)
 LOGIN=$(cat login)
 PASSWORD=$(cat password)
 #OPTIONS="-r checkip.dyndns.org -v" # add verbosity
-OPTIONS="-r checkip.dyndns.org"
+#OPTIONS="-r checkip.dyndns.org"
+OPTIONS="-r checkip.pointfixe.fr"
 
 #echo ---------------------------------- >> ./dynhost.log
 #echo `date` >> ./dynhost.log 
