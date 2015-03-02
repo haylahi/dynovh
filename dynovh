@@ -26,8 +26,8 @@ import urllib2, time, re, sys, xmlrpclib
 
 __author__ = 'hubert'
 
-#REFIP = 'http://checkip.dyndns.com'
-REFIP = 'http://checkip.pointfixe.fr'
+#REFIP = 'checkip.dyndns.com'
+REFIP = 'checkip.pointfixe.fr'
 NBR_CONNEXION = 10
 NBR_ATTEMPT_REFIP = 10
 
@@ -68,7 +68,11 @@ def get_current_ip():
         if i >= NBR_ATTEMPT_REFIP :
             raise Exception("Impossion de trouver l'ip courante")
         try:
-            f = urllib2.urlopen(REFIP, None, 10)
+            #f = urllib2.urlopen('http://' + REFIP, None, 10)
+            import socket
+            host = socket.gethostbyname(REFIP)
+            request = urllib2.Request('http://{}'.format(host), headers = {'Host': REFIP})
+            f = urllib2.urlopen(request)
             succed = True
         except:
             succed = False

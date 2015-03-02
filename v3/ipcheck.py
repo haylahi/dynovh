@@ -1038,10 +1038,13 @@ if __name__=="__main__":
       opt_router = "checkip.dyndns.org:8245"
     
     # strip off the http part, if any
+    domaine = ""
     if opt_router[:7] == "HTTP://" or opt_router[:7] == "http://":
       ipurl = opt_router[7:]
+      domaine = ipurl
     else:
       ipurl = opt_router
+      domaine = ipurl
 
     # stick it back on for urllib usage
     ipurl = "http://" + ipurl
@@ -1050,7 +1053,12 @@ if __name__=="__main__":
 
     # grab the data
     try:
-      urlfp = urllib.urlopen(ipurl)
+      import urllib2
+      import socket
+      host = socket.gethostbyname(domaine)
+      requete = urllib2.Request('http://{}'.format(host), headers = {'Host': domaine})
+      #urlfp = urllib.urlopen(ipurl)
+      urlfp = urllib2.urlopen(requete)
       ipdata = urlfp.read()
       urlfp.close()
     except:
